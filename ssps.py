@@ -8,11 +8,9 @@ Created on Tue Nov 19 11:05:54 2024
 import pandas as pd
 import numpy as np
 
-
-
 def add_iso3(df):
     
-    data = pd.read_csv('regions/iiasa_country_mapping.csv')
+    data = pd.read_csv('inputs/mapping_regions_countries/iiasa_country_mapping.csv')
     iiasacountry_to_iso3 = data.set_index('Country')['ISO3'].to_dict()
         
     df['ISO3'] = df['Region'].map(iiasacountry_to_iso3)
@@ -20,17 +18,15 @@ def add_iso3(df):
     
     return df
 
-
 def add_omnia_region(df):
     
-    data = pd.read_csv('regions/OMNIA_region_mapping_241120.csv')
+    data = pd.read_csv('inputs/mapping_regions_countries/OMNIA_region_mapping_241120.csv')
     iso3_to_region = data.set_index('ISO3')['region'].to_dict()
         
     df['OMNIA'] = df['ISO3'].map(iso3_to_region)
     df.insert(df.columns.get_loc('Region') + 2, 'OMNIA',  df.pop('OMNIA'))
     
     return df
- 
    
 def get_driver_proj(ssp_data, driver, ssp_scen):
     
@@ -70,7 +66,6 @@ def get_driver_proj(ssp_data, driver, ssp_scen):
     expanded_years_data = expanded_years_data.reindex(columns=map(str, full_years)).interpolate(axis=1).reset_index()
        
     return expanded_years_data
-
 
 def get_gdppercapita_proj(pop_data, gdp_data):
     
@@ -127,82 +122,6 @@ def get_imf_gr(path_imf, path_iso3_imf):
     
     return df_with_iso3
 
-def update_gdp_with_imf(gdp_data, growth_data_imf):
-            
-    # Calculate year-on-year growth
-    gdp_growth = gdp_data.iloc[:, 6:].pct_change(axis=1) * 100
-
-    # Add the non-year columns back to the new dataframe
-    growth_data = pd.concat([gdp_data.iloc[:, :6], gdp_growth.iloc[:, 1:]], axis=1)
-
-    growth_data.set_index("ISO3", inplace=True)
-    growth_data = growth_data.iloc[:, 5:]
-
-    growth_data.index = growth_data.index.astype(str)
-    growth_data_imf.index = growth_data_imf.index.astype(str)
-    growth_data.columns = growth_data.columns.astype(str)
-    growth_data_imf.columns = growth_data_imf.columns.astype(str)
-
-    growth_data.update(growth_data_imf)
-
-    growth_data = growth_data/100
-
-    # Select years 2020 to 2100
-    years = [str(year) for year in range(2020, 2101)]
-
-    # Iterate through each year and update gdp_data
-    for year in years:
-        prev_year = str(int(year) - 1)  # Previous year
-        if prev_year in gdp_data.columns and year in growth_data.columns:
-            # Update GDP for the current year
-            gdp_data[year] = gdp_data[prev_year] * (1 + growth_data[year].values)
-            
-    return gdp_data
-
-
-def calculate_growth_yoy(df, years):
-    
-    years_str = [str(i) for i in years]
-    year_columns = [col for col in df.columns if col.isnumeric()]
-    years_drop = [item for item in year_columns if item not in years_str]
-    
-    df = df.drop(columns=years_drop, errors='ignore')
-    df = df.drop(columns=['Variable','Model', 'Unit'], errors='ignore')
-    
-    df[years_str] = df[years_str].div(df[years_str].shift(axis=1))
-    df[str(years[0])] = 1
-    
-    return df       
-
-def calculate_growth_base_year(df, years):
-    """
-    Calculates the growth in each column with respect to the base year.
-    
-    Parameters:
-    - df: The DataFrame containing the data (with columns as years and rows as different regions or entities).
-    - base_year: The year against which growth will be calculated.
-
-    Returns:
-    - A DataFrame with growth percentages calculated with respect to the base year.
-    """
-    
-    years_str = [str(i) for i in years]
-    year_columns = [col for col in df.columns if col.isnumeric()]
-    years_drop = [item for item in year_columns if item not in years_str]
-    
-    df = df.drop(columns=years_drop, errors='ignore')
-    df = df.drop(columns=['Variable','Model', 'Unit'], errors='ignore')
-
-    # Create a new DataFrame to store the growth results
-    growth_df = df.copy()
-
-    # Calculate growth for each column (i.e., year) with respect to the base year
-    for year in df.columns:
-        if year != years[0]:  # Skip the base year itself
-            growth_df[year] = df[year] / df[str(years[0])]
-
-    return growth_df
-
 def get_data_venezuela(path_ven):
     
     df_ven = pd.read_csv(path_ven)
@@ -255,21 +174,94 @@ def get_data_venezuela(path_ven):
     omnia = omnia[ordered_cols]
 
     return omnia
+
+def update_gdp_with_imf(gdp_data, growth_data_imf):
+            
+    # Calculate year-on-year growth
+    gdp_growth = gdp_data.iloc[:, 6:].pct_change(axis=1) * 100
+
+    # Add the non-year columns back to the new dataframe
+    growth_data = pd.concat([gdp_data.iloc[:, :6], gdp_growth.iloc[:, 1:]], axis=1)
+
+    growth_data.set_index("ISO3", inplace=True)
+    growth_data = growth_data.iloc[:, 5:]
+
+    growth_data.index = growth_data.index.astype(str)
+    growth_data_imf.index = growth_data_imf.index.astype(str)
+    growth_data.columns = growth_data.columns.astype(str)
+    growth_data_imf.columns = growth_data_imf.columns.astype(str)
+
+    growth_data.update(growth_data_imf)
+
+    growth_data = growth_data/100
+
+    # Select years 2020 to 2100
+    years = [str(year) for year in range(2020, 2101)]
+
+    # Iterate through each year and update gdp_data
+    for year in years:
+        prev_year = str(int(year) - 1)  # Previous year
+        if prev_year in gdp_data.columns and year in growth_data.columns:
+            # Update GDP for the current year
+            gdp_data[year] = gdp_data[prev_year] * (1 + growth_data[year].values)
+            
+    return gdp_data
+
+def calculate_growth_yoy(df, years):
+    
+    years_str = [str(i) for i in years]
+    year_columns = [col for col in df.columns if col.isnumeric()]
+    years_drop = [item for item in year_columns if item not in years_str]
+    
+    df = df.drop(columns=years_drop, errors='ignore')
+    df = df.drop(columns=['Variable','Model', 'Unit'], errors='ignore')
+    
+    df[years_str] = df[years_str].div(df[years_str].shift(axis=1))
+    df[str(years[0])] = 1
+    
+    return df       
+
+def calculate_growth_base_year(df, years):
+    """
+    Calculates the growth in each column with respect to the base year.
+    
+    Parameters:
+    - df: The DataFrame containing the data (with columns as years and rows as different regions or entities).
+    - base_year: The year against which growth will be calculated.
+
+    Returns:
+    - A DataFrame with growth percentages calculated with respect to the base year.
+    """
+    
+    years_str = [str(i) for i in years]
+    year_columns = [col for col in df.columns if col.isnumeric()]
+    years_drop = [item for item in year_columns if item not in years_str]
+    
+    df = df.drop(columns=years_drop, errors='ignore')
+    df = df.drop(columns=['Variable','Model', 'Unit'], errors='ignore')
+
+    # Create a new DataFrame to store the growth results
+    growth_df = df.copy()
+
+    # Calculate growth for each column (i.e., year) with respect to the base year
+    for year in df.columns:
+        if year != years[0]:  # Skip the base year itself
+            growth_df[year] = df[year] / df[str(years[0])]
+
+    return growth_df
  
-
-
 """
 Part 1 - Extracting SSP data
 """
 
 # Read dataset and add ISO3 and OMNIA regions columns
-ssp_data = pd.read_csv('SSPs/Global data/SSP_database_2024.csv', comment='#')
+ssp_data = pd.read_csv('inputs/Global data/SSP_database_2024.csv', comment='#')
 ssp_data = add_iso3(ssp_data) # Add ISO3
 ssp_data = add_omnia_region(ssp_data) # Add OMNIA regions
 
 # Read OMNIA regions map and IIASA countries map
-omnia_map = pd.read_csv('regions/OMNIA_region_mapping_241120.csv')
-ssp_map = pd.read_csv('regions/iiasa_country_mapping.csv')
+omnia_map = pd.read_csv('inputs/mapping_regions_countries/OMNIA_region_mapping_241120.csv')
+ssp_map = pd.read_csv('inputs/mapping_regions_countries/iiasa_country_mapping.csv')
 
 # Getting lists of countries per each dataset in ISO3 format
 models_ssp_df = ssp_data['Model'].unique().tolist() # Data sources in the SSP dataset
@@ -309,13 +301,13 @@ print(diff_countries)
 print('')
 
 # IMF data
-path_imf = './SSPs/Global data/IMF-WEO2024-GDPproj.xlsx'
-path_iso3_imf = './regions/imf_country_mapping.csv'
+path_imf = './inputs/Global data/IMF-WEO2024-GDPproj.xlsx'
+path_iso3_imf = './inputs/mapping_regions_countries/imf_country_mapping.csv'
 growth_data_imf = get_imf_gr(path_imf, path_iso3_imf)
 print('')
 
 # GCAM data for Venezuela
-path_ven = './SSPs/L102.gdp_mil90usd_Scen_R_VN.csv'
+path_ven = './inputs/L102.gdp_mil90usd_Scen_R_VN.csv'
 df_ven = get_data_venezuela(path_ven)
 ssp_data = ssp_data[df_ven.columns]
 ssp_data = pd.concat([ssp_data, df_ven], axis=0, ignore_index=True)
@@ -323,8 +315,6 @@ ssp_data = pd.concat([ssp_data, df_ven], axis=0, ignore_index=True)
 print('We reintroduced GDP data for Venezuela based on GCAM data')
 print('')
   
-
-
 """
 Part 2 - Building year on year projections for OMNIA
 """
@@ -357,47 +347,36 @@ for scenario in ssp_scen:
     pop_data_regions = pop_data.groupby('OMNIA').sum(numeric_only=True)
     gdp_data_regions = gdp_data.groupby('OMNIA').sum(numeric_only=True)
     gdppc_data_regions = get_gdppercapita_proj(pop_data_regions, gdp_data_regions)
-    
-    # Reorganise dataframe to get desired output structure
-    
-    df = gdppc_data_regions.drop(columns=['Model', 'Variable', 'Unit'])
-    df = df.T
-    df = df.loc[df.index.isin([str(y) for y in years_omnia])]
-    
-# #     path = "gdp.xlsx"
-# #     df.to_excel(path, index=True)
 
+    # Growth year on year
+    
+    # pop_gr_omnia = calculate_growth_yoy(pop_data_regions, years_omnia)
+    # gdp_gr_omnia = calculate_growth_yoy(gdp_data_regions, years_omnia)
+    # gdppc_gr_omnia = calculate_growth_yoy(gdppc_data_regions, years_omnia)
+    
+    # output_excel_path = f'ssps_growth_rates/gr_{scenario}_population_yoy.xlsx'
+    # pop_gr_omnia.to_excel(output_excel_path, index=True)
+    
+    # output_excel_path = f'ssps_growth_rates/gr_{scenario}_gdp_yoy.xlsx'
+    # pop_gr_omnia.to_excel(output_excel_path, index=True)
 
-#     # Growth year on year
-    
-#     # pop_gr_omnia = calculate_growth_yoy(pop_data_regions, years_omnia)
-#     # gdp_gr_omnia = calculate_growth_yoy(gdp_data_regions, years_omnia)
-#     # gdppc_gr_omnia = calculate_growth_yoy(gdppc_data_regions, years_omnia)
-    
-#     # output_excel_path = f'ssps_growth_rates/gr_{scenario}_population_yoy.xlsx'
-#     # pop_gr_omnia.to_excel(output_excel_path, index=True)
-    
-#     # output_excel_path = f'ssps_growth_rates/gr_{scenario}_gdp_yoy.xlsx'
-#     # pop_gr_omnia.to_excel(output_excel_path, index=True)
+    # output_excel_path = f'ssps_growth_rates/gr_{scenario}_gdppc_yoy.xlsx'
+    # pop_gr_omnia.to_excel(output_excel_path, index=True)
 
-#     # output_excel_path = f'ssps_growth_rates/gr_{scenario}_gdppc_yoy.xlsx'
-#     # pop_gr_omnia.to_excel(output_excel_path, index=True)
-
-
-#     # Growth base year
+    # Growth base year
     
-#     # pop_gr_omnia_by = calculate_growth_base_year(pop_data_regions, years_omnia)    
-#     # gdp_gr_omnia_by = calculate_growth_base_year(gdp_data_regions, years_omnia)
-#     # gdppc_gr_omnia_by = calculate_growth_base_year(gdppc_data_regions, years_omnia)
+    pop_gr_omnia_by = calculate_growth_base_year(pop_data_regions, years_omnia)    
+    gdp_gr_omnia_by = calculate_growth_base_year(gdp_data_regions, years_omnia)
+    gdppc_gr_omnia_by = calculate_growth_base_year(gdppc_data_regions, years_omnia)
     
-#     # output_excel_path = f'ssps_growth_rates/gr_{scenario}_population_baseyear.xlsx'
-#     # pop_gr_omnia_by.to_excel(output_excel_path, index=True)
+    output_excel_path = f'outputs/gr_{scenario}_population_baseyear.xlsx'
+    pop_gr_omnia_by.to_excel(output_excel_path, index=True)
     
-#     # output_excel_path = f'ssps_growth_rates/gr_{scenario}_gdp_baseyear.xlsx'
-#     # gdp_gr_omnia_by.to_excel(output_excel_path, index=True)
+    output_excel_path = f'outputs/gr_{scenario}_gdp_baseyear.xlsx'
+    gdp_gr_omnia_by.to_excel(output_excel_path, index=True)
 
-#     # output_excel_path = f'ssps_growth_rates/gr_{scenario}_gdppc_baseyear.xlsx'
-#     # gdppc_gr_omnia_by.to_excel(output_excel_path, index=True)
+    output_excel_path = f'outputs/gr_{scenario}_gdppc_baseyear.xlsx'
+    gdppc_gr_omnia_by.to_excel(output_excel_path, index=True)
 
 
 
