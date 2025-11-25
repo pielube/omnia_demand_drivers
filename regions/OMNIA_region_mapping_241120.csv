@@ -1,0 +1,229 @@
+region,country_OMNIA,ISO2,ISO3
+AFE,Ethiopia,ET,ETH
+AFE,Kenya,KE,KEN
+AFE,Sudan,SD,SDN
+AFE,Mauritius,MU,MUS
+AFE,Eritrea,ER,ERI
+AFE,South Sudan,SS,SSD
+AFE,Burundi,BI,BDI
+AFE,Comoros,KM,COM
+AFE,Djibouti,DJ,DJI
+AFE,Madagascar,MG,MDG
+AFE,Reunion,RE,REU
+AFE,Rwanda,RW,RWA
+AFE,Somalia,SO,SOM
+AFE,Uganda,UG,UGA
+AFE,Seychelles,SC,SYC
+AFE,United Republic of Tanzania,TZ,TZA
+AFN,Egypt,EG,EGY
+AFN,Algeria,DZ,DZA
+AFN,Morocco,MA,MAR
+AFN,Libya,LY,LBY
+AFN,Tunisia,TN,TUN
+AFW,Democratic Republic of the Congo,CD,COD
+AFW,Cote d'Ivoire,CI,CIV
+AFW,Ghana,GH,GHA
+AFW,Cameroon,CM,CMR
+AFW,Gabon,GA,GAB
+AFW,Benin,BJ,BEN
+AFW,Senegal,SN,SEN
+AFW,Togo,TG,TGO
+AFW,Niger,NE,NER
+AFW,Congo,CG,COG
+AFW,Burkina Faso,BF,BFA
+AFW,Cabo Verde,CV,CPV
+AFW,Central African Republic,CF,CAF
+AFW,Chad,TD,TCD
+AFW,Equatorial Guinea,GQ,GNQ
+AFW,Gambia,GM,GMB
+AFW,Guinea,GN,GIN
+AFW,Guinea-Bissau,GW,GNB
+AFW,Liberia,LR,LBR
+AFW,Malawi,MW,MWI
+AFW,Mali,ML,MLI
+AFW,Mauritania,MR,MRT
+AFW,Sao Tome and Principe,ST,STP
+AFW,Sierra Leone,SL,SLE
+AFZ,Angola,AO,AGO
+AFZ,Mozambique,MZ,MOZ
+AFZ,Zimbabwe,ZW,ZWE
+AFZ,Zambia,ZM,ZMB
+AFZ,Botswana,BW,BWA
+AFZ,Namibia,NA,NAM
+AFZ,South Africa,ZA,ZAF
+AFZ,Eswatini,SZ,SWZ
+AFZ,Lesotho,LS,LSO
+NIG,Nigeria,NG,NGA
+RUS,Russian Federation,RU,RUS
+ASC,Kazakhstan,KZ,KAZ
+ASC,Uzbekistan,UZ,UZB
+ASC,Turkmenistan,TM,TKM
+ASC,Azerbaijan,AZ,AZE
+ASC,Mongolia,MN,MNG
+ASC,Georgia,GE,GEO
+ASC,Kyrgyzstan,KG,KGZ
+ASC,Armenia,AM,ARM
+ASC,Tajikistan,TJ,TJK
+ASC,Afghanistan,AF,AFG
+ASE,Thailand,TH,THA
+ASE,Malaysia,MY,MYS
+ASE,Singapore,SG,SGP
+ASE,Myanmar,MM,MMR
+ASE,Cambodia,KH,KHM
+ASE,Brunei Darussalam,BN,BRN
+ASE,Lao People's Democratic Republic,LA,LAO
+ASE,Democratic People's Republic of Korea,KP,PRK
+ASE,Cook Islands,CK,COK
+ASE,Timor-Leste,TL,TLS
+ASE,Fiji,FJ,FJI
+ASE,French Polynesia,PF,PYF
+ASE,Kiribati,KI,KIR
+ASE,New Caledonia,NC,NCL
+ASE,Palau,PW,PLW
+ASE,Papua New Guinea,PG,PNG
+ASE,American Samoa,AS,ASM
+ASE,Solomon Islands,SB,SLB
+ASE,Tonga,TO,TON
+ASE,Vanuatu,VU,VUT
+ASE,Niue,NU,NIU
+ASE,Samoa,WS,WSM
+ASE,Wallis and Futuna Islands,WF,WLF
+ASE,Micronesia (Federated States of),FM,FSM
+ASE,Nauru,NR,NRU
+ASE,Tuvalu,TV,TUV
+ASE,Northern Mariana Islands,MP,MNP
+CHN,China,CN,CHN
+CHN,"China, Hong Kong Special Administrative Region",HK,HKG
+CHN,"China, Macao Special Administrative Region",MO,MAC
+IDN,Indonesia,ID,IDN
+IDN,Philippines,PH,PHL
+IDN,Viet Nam,VN,VNM
+IND,India,IN,IND
+ASO,Bangladesh,BD,BGD
+ASO,Nepal,NP,NPL
+ASO,Sri Lanka,LK,LKA
+ASO,Pakistan,PK,PAK
+ASO,Bhutan,BT,BTN
+ASO,Maldives,MV,MDV
+JPN,Japan,JP,JPN
+SKT,"Taiwan, Province of China",TW,TWN
+SKT,Republic of Korea,KR,KOR
+ANZ,Australia,AU,AUS
+ANZ,New Zealand,NZ,NZL
+USA,United States of America,US,USA
+CAN,Canada,CA,CAN
+LAM,Argentina,AR,ARG
+LAM,Venezuela (Bolivarian Republic of),VE,VEN
+LAM,Colombia,CO,COL
+LAM,Peru,PE,PER
+LAM,Trinidad and Tobago,TT,TTO
+LAM,Ecuador,EC,ECU
+LAM,Guatemala,GT,GTM
+LAM,Cuba,CU,CUB
+LAM,Bolivia (Plurinational State of),BO,BOL
+LAM,Dominican Republic,DO,DOM
+LAM,Honduras,HN,HND
+LAM,Paraguay,PY,PRY
+LAM,Uruguay,UY,URY
+LAM,Costa Rica,CR,CRI
+LAM,El Salvador,SV,SLV
+LAM,Haiti,HT,HTI
+LAM,Panama,PA,PAN
+LAM,Nicaragua,NI,NIC
+LAM,Jamaica,JM,JAM
+LAM,Curaçao,CW,CUW
+LAM,Suriname,SR,SUR
+LAM,Antigua and Barbuda,AG,ATG
+LAM,Aruba,AW,ABW
+LAM,Bahamas,BS,BHS
+LAM,Barbados,BB,BRB
+LAM,Belize,BZ,BLZ
+LAM,Bermuda,BM,BMU
+LAM,British Virgin Islands,VG,VGB
+LAM,Cayman Islands,KY,CYM
+LAM,Dominica,DM,DMA
+LAM,Falkland Islands (Malvinas),FK,FLK
+LAM,Guyana,GY,GUY
+LAM,Grenada,GD,GRD
+LAM,Guadeloupe,GP,GLP
+LAM,Cooperative Republic of Guyana,GY,GUY
+LAM,Martinique,MQ,MTQ
+LAM,Montserrat,MS,MSR
+LAM,Puerto Rico,PR,PRI
+LAM,"Bonaire, Sint Eustatius and Saba",BQ,BES
+LAM,Saint Kitts and Nevis,KN,KNA
+LAM,Saint Lucia,LC,LCA
+LAM,Saint Pierre and Miquelon,PM,SPM
+LAM,Saint Vincent and the Grenadines,VC,VCT
+LAM,Saint Martin,MF,MAF
+LAM,Turks and Caicos Islands,TC,TCA
+LAM,Sint Maarten (Dutch part),SX,SXM
+LAM,Anguilla,AI,AIA
+BRA,Brazil,BR,BRA
+MEX,Mexico,MX,MEX
+CHL,Chile,CL,CHL
+ENE,Ukraine,UA,UKR
+ENE,Belarus,BY,BLR
+ENE,Serbia,RS,SRB
+ENE,Bosnia and Herzegovina,BA,BIH
+ENE,Republic of Moldova,MD,MDA
+ENE,Republic of North Macedonia,MK,MKD
+ENE,Kosovo,XK,XKX
+ENE,Albania,AL,ALB
+ENE,Montenegro,ME,MNE
+ENW,Norway,NO,NOR
+ENW,Svalbard and Jan Mayen Islands,SJ,SJM
+ENW,Switzerland,CH,CHE
+ENW,Liechtenstein,LI,LIE
+ENW,Iceland,IS,ISL
+ENW,United Kingdom of Great Britain and Northern Ireland,GB,GBR
+ENW,Gibraltar,GI,GIB
+ENW,Saint Helena,SH ,SHN
+ENW,Liechtenstein,LI,LIE
+EUE,Poland,PL,POL
+EUE,Czechia,CZ,CZE
+EUE,Romania,RO,ROU
+EUE,Hungary,HU,HUN
+EUE,Bulgaria,BG,BGR
+EUE,Slovakia,SK,SVK
+EUE,Croatia,HR,HRV
+EUE,Lithuania,LT,LTU
+EUE,Slovenia,SI,SVN
+EUE,Estonia,EE,EST
+EUE,Latvia,LV,LVA
+EUW,Germany,DE,DEU
+EUW,Netherlands,NL,NLD
+EUW,Belgium,BE,BEL
+EUW,Sweden,SE,SWE
+EUW,Austria,AT,AUT
+EUW,Finland,FI,FIN
+EUW,Denmark,DK,DNK
+EUW,Ireland,IE,IRL
+EUW,Luxembourg,LU,LUX
+EUW,Greenland,GL,GRL
+EUW,Faroe Islands,FO,FRO
+EUW,Andorra,AD,AND
+EUM,France,FR,FRA
+EUM,Monaco,MC,MCO
+EUM,Italy,IT,ITA
+EUM,San Marino,SM,SMR
+EUM,Spain,ES,ESP
+EUM,Greece,GR,GRC
+EUM,Portugal,PT,PRT
+EUM,Cyprus,CY,CYP
+EUM,Malta,MT,MLT
+MEA,Iran (Islamic Republic of),IR,IRN
+MEA,Saudi Arabia,SA,SAU
+MEA,United Arab Emirates,AE,ARE
+MEA,Iraq,IQ,IRQ
+MEA,Qatar,QA,QAT
+MEA,Kuwait,KW,KWT
+MEA,Oman,OM,OMN
+MEA,Bahrain,BH,BHR
+MEA,Yemen,YE,YEM
+MDA,Turkey,TR,TUR
+MDA,Israel,IL,ISR
+MDA,Syrian Arab Republic,SY,SYR
+MDA,Jordan,JO,JOR
+MDA,Lebanon,LB,LBN
+MDA,State of Palestine,PS,PSE
