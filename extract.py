@@ -249,6 +249,49 @@ def calculate_growth_base_year(df, years):
             growth_df[year] = df[year] / df[str(years[0])]
 
     return growth_df
+
+def export_country_gdp_projection(gdp_data, output_path):
+    """
+    Exports country-level GDP projections by year.
+
+    Output columns:
+    Country, ISO2, ISO3, then one column per available year.
+    """
+
+    year_cols = [col for col in gdp_data.columns if str(col).isnumeric()]
+
+    # Load OMNIA mapping (contains ISO2)
+    omnia_map = pd.read_csv(
+    'inputs/mapping_regions_countries/OMNIA_region_mapping_241120.csv',
+    keep_default_na=False)
+
+    iso3_to_iso2 = (
+        omnia_map
+        .dropna(subset=["ISO3"])
+        .drop_duplicates("ISO3")
+        .set_index("ISO3")["ISO2"]
+        .to_dict()
+        if "ISO2" in omnia_map.columns
+        else {}
+    )
+
+    output = gdp_data[["Region", "ISO3"] + year_cols].copy()
+    output.rename(columns={"Region": "Country"}, inplace=True)
+
+    output.insert(
+        output.columns.get_loc("ISO3"),
+        "ISO2",
+        output["ISO3"].map(iso3_to_iso2)
+    )
+
+    # Optional diagnostic
+    missing_iso2 = output[output["ISO2"].isna()]["ISO3"].unique().tolist()
+    if missing_iso2:
+        print("Missing ISO2 codes for:", missing_iso2)
+
+    output.to_excel(output_path, index=False)
+
+    return output
  
 """
 Part 1 - Extracting SSP data
@@ -341,6 +384,10 @@ for scenario in ssp_scen:
     gdp_data.loc[rows_with_nan_index[0],'2019'] =  gdp_data.loc[rows_with_nan_index[0],'2020']
     gdp_data.loc[rows_with_nan_index[1],'2019'] =  gdp_data.loc[rows_with_nan_index[1],'2020']
     gdp_data = update_gdp_with_imf(gdp_data, growth_data_imf) # Update GDP data with IMF data
+    
+    # Export country-level GDP projections, after IMF updates
+    output_excel_path = f'outputs/gdp_projection_country_{scenario}.xlsx'
+    export_country_gdp_projection(gdp_data, output_excel_path)
     
     # OMNIA regions level - Pop, GDP and GDPpc
 
