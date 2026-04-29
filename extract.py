@@ -251,43 +251,57 @@ def calculate_growth_base_year(df, years):
     return growth_df
 
 def export_country_gdp_projection(gdp_data, output_path):
-    """
-    Exports country-level GDP projections by year.
-
-    Output columns:
-    Country, ISO2, ISO3, then one column per available year.
-    """
 
     year_cols = [col for col in gdp_data.columns if str(col).isnumeric()]
 
-    # Load OMNIA mapping (contains ISO2)
+    # Load OMNIA mapping (preserve "NA" as valid ISO2)
     omnia_map = pd.read_csv(
-    'inputs/mapping_regions_countries/OMNIA_region_mapping_241120.csv',
-    keep_default_na=False)
+        'inputs/mapping_regions_countries/OMNIA_region_mapping_241120.csv',
+        keep_default_na=False
+    )
 
+    # Build mappings
     iso3_to_iso2 = (
         omnia_map
         .dropna(subset=["ISO3"])
         .drop_duplicates("ISO3")
         .set_index("ISO3")["ISO2"]
         .to_dict()
-        if "ISO2" in omnia_map.columns
-        else {}
+    )
+
+    iso3_to_omnia = (
+        omnia_map
+        .dropna(subset=["ISO3"])
+        .drop_duplicates("ISO3")
+        .set_index("ISO3")["region"]
+        .to_dict()
     )
 
     output = gdp_data[["Region", "ISO3"] + year_cols].copy()
     output.rename(columns={"Region": "Country"}, inplace=True)
 
+    # Insert ISO2
     output.insert(
         output.columns.get_loc("ISO3"),
         "ISO2",
         output["ISO3"].map(iso3_to_iso2)
     )
 
-    # Optional diagnostic
+    # Insert OMNIA region (after ISO3)
+    output.insert(
+        output.columns.get_loc("ISO3") + 1,
+        "OMNIA",
+        output["ISO3"].map(iso3_to_omnia)
+    )
+
+    # Diagnostics
     missing_iso2 = output[output["ISO2"].isna()]["ISO3"].unique().tolist()
+    missing_omnia = output[output["OMNIA"].isna()]["ISO3"].unique().tolist()
+
     if missing_iso2:
         print("Missing ISO2 codes for:", missing_iso2)
+    if missing_omnia:
+        print("Missing OMNIA regions for:", missing_omnia)
 
     output.to_excel(output_path, index=False)
 
