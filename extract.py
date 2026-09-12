@@ -249,6 +249,76 @@ def calculate_growth_base_year(df, years):
             growth_df[year] = df[year] / df[str(years[0])]
 
     return growth_df
+
+def export_base_year_values(df, output_path, base_year=2019):
+    """Export absolute values for one base year at OMNIA-region level."""
+
+    base_year = str(base_year)
+    if base_year not in df.columns:
+        raise ValueError(f'Base year {base_year} is not available in the data')
+
+    output = df[[base_year]].copy()
+    output.index.name = 'OMNIA'
+    output.to_csv(output_path, index=True)
+
+    return output
+
+def export_country_gdp_projection(gdp_data, output_path):
+
+    year_cols = [col for col in gdp_data.columns if str(col).isnumeric()]
+
+    # Load OMNIA mapping (preserve "NA" as valid ISO2)
+    omnia_map = pd.read_csv(
+        'inputs/mapping_regions_countries/OMNIA_region_mapping_241120.csv',
+        keep_default_na=False
+    )
+
+    # Build mappings
+    iso3_to_iso2 = (
+        omnia_map
+        .dropna(subset=["ISO3"])
+        .drop_duplicates("ISO3")
+        .set_index("ISO3")["ISO2"]
+        .to_dict()
+    )
+
+    iso3_to_omnia = (
+        omnia_map
+        .dropna(subset=["ISO3"])
+        .drop_duplicates("ISO3")
+        .set_index("ISO3")["region"]
+        .to_dict()
+    )
+
+    output = gdp_data[["Region", "ISO3"] + year_cols].copy()
+    output.rename(columns={"Region": "Country"}, inplace=True)
+
+    # Insert ISO2
+    output.insert(
+        output.columns.get_loc("ISO3"),
+        "ISO2",
+        output["ISO3"].map(iso3_to_iso2)
+    )
+
+    # Insert OMNIA region (after ISO3)
+    output.insert(
+        output.columns.get_loc("ISO3") + 1,
+        "OMNIA",
+        output["ISO3"].map(iso3_to_omnia)
+    )
+
+    # Diagnostics
+    missing_iso2 = output[output["ISO2"].isna()]["ISO3"].unique().tolist()
+    missing_omnia = output[output["OMNIA"].isna()]["ISO3"].unique().tolist()
+
+    if missing_iso2:
+        print("Missing ISO2 codes for:", missing_iso2)
+    if missing_omnia:
+        print("Missing OMNIA regions for:", missing_omnia)
+
+    output.to_excel(output_path, index=False)
+
+    return output
  
 """
 Part 1 - Extracting SSP data
@@ -342,11 +412,29 @@ for scenario in ssp_scen:
     gdp_data.loc[rows_with_nan_index[1],'2019'] =  gdp_data.loc[rows_with_nan_index[1],'2020']
     gdp_data = update_gdp_with_imf(gdp_data, growth_data_imf) # Update GDP data with IMF data
     
+    # Export country-level GDP projections, after IMF updates
+    output_excel_path = f'outputs/gdp_projection_country_{scenario}.xlsx'
+    export_country_gdp_projection(gdp_data, output_excel_path)
+    
     # OMNIA regions level - Pop, GDP and GDPpc
 
     pop_data_regions = pop_data.groupby('OMNIA').sum(numeric_only=True)
     gdp_data_regions = gdp_data.groupby('OMNIA').sum(numeric_only=True)
     gdppc_data_regions = get_gdppercapita_proj(pop_data_regions, gdp_data_regions)
+
+    # Export absolute regional values for the 2019 base year
+    export_base_year_values(
+        pop_data_regions,
+        f'outputs/baseyear_2019_population_{scenario}.csv'
+    )
+    export_base_year_values(
+        gdp_data_regions,
+        f'outputs/baseyear_2019_gdp_{scenario}.csv'
+    )
+    export_base_year_values(
+        gdppc_data_regions,
+        f'outputs/baseyear_2019_gdppc_{scenario}.csv'
+    )
 
     # Growth year on year
     
