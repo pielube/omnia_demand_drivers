@@ -250,6 +250,19 @@ def calculate_growth_base_year(df, years):
 
     return growth_df
 
+def export_base_year_values(df, output_path, base_year=2019):
+    """Export absolute values for one base year at OMNIA-region level."""
+
+    base_year = str(base_year)
+    if base_year not in df.columns:
+        raise ValueError(f'Base year {base_year} is not available in the data')
+
+    output = df[[base_year]].copy()
+    output.index.name = 'OMNIA'
+    output.to_csv(output_path, index=True)
+
+    return output
+
 def export_country_gdp_projection(gdp_data, output_path):
 
     year_cols = [col for col in gdp_data.columns if str(col).isnumeric()]
@@ -408,6 +421,20 @@ for scenario in ssp_scen:
     pop_data_regions = pop_data.groupby('OMNIA').sum(numeric_only=True)
     gdp_data_regions = gdp_data.groupby('OMNIA').sum(numeric_only=True)
     gdppc_data_regions = get_gdppercapita_proj(pop_data_regions, gdp_data_regions)
+
+    # Export absolute regional values for the 2019 base year
+    export_base_year_values(
+        pop_data_regions,
+        f'outputs/baseyear_2019_population_{scenario}.csv'
+    )
+    export_base_year_values(
+        gdp_data_regions,
+        f'outputs/baseyear_2019_gdp_{scenario}.csv'
+    )
+    export_base_year_values(
+        gdppc_data_regions,
+        f'outputs/baseyear_2019_gdppc_{scenario}.csv'
+    )
 
     # Growth year on year
     
